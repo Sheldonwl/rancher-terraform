@@ -22,22 +22,18 @@ variable "kubernetes_version" {
   default = "v1.18.9-rancher1-1"
 }
 
-# Local variables used to reduce repetition
+# Node information
 locals {
-  # Node information
   rke_nodes = [{
-    public_ip = "128.199.43.14"
-    private_ip = "10.133.0.2"
-    hostname = "sh-euro-0"
+    public_ip = "x.x.x.x"
+    hostname = "x"
   },
   {
-    public_ip = "128.199.44.97"
-    private_ip = "10.133.0.3"
-    hostname = "sh-euro-1"
+    public_ip = "x.x.x.x"
+    hostname = "x"
   },
   {
-    public_ip = "128.199.45.216"
-    private_ip = "10.133.0.4"
-    hostname = "sh-euro-2"
+    public_ip = "x.x.x.x"
+    hostname = "x"
   }]
 }
