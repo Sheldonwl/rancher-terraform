@@ -23,7 +23,7 @@ resource "helm_release" "cert_manager" {
 resource "helm_release" "rancher_server" {
   depends_on = [
     kubernetes_job.create_cattle_system_ns,
-    helm_release.cert_manager,
+    helm_release.cert_manager
   ]
 
   repository = data.helm_repository.rancher.metadata[0].name

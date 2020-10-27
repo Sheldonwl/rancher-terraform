@@ -111,3 +111,20 @@ resource "kubernetes_job" "create_cattle_system_ns" {
     command = "sleep 30s"
   }
 }
+
+# Rancher certificates
+resource "kubernetes_secret" "rancher_cert" {
+  depends_on = [kubernetes_job.create_cattle_system_ns]
+
+   metadata {
+     name      = "tls-rancher-ingress"
+     namespace = "cattle-system"
+  }
+
+  data = { 
+    "tls.crt" = var.tls_crt
+    "tls.key" = var.tls_key
+  }
+
+  type = "kubernetes.io/tls"
+}
