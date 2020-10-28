@@ -43,6 +43,18 @@ module "rancher_server" {
     chart_set = [{
       name    = "ingress.tls.source"
       value   = "secret"
+    }, 
+    {
+      name    = "rancherImage"
+      value   = "IMAGE_REPO/rancher/rancher"
+    }, 
+    {
+      name    = "systemDefaultRegistry"
+      value   = "IMAGE_REPO"
+    },
+    {
+      name    = "useBundledSystemChart"
+      value   = "true"
     }]
   }
   rancher_k8s = {
