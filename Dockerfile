@@ -1,30 +1,45 @@
+# This image is used for running Terraform in an air-gapped environment.
+# Make sure to set the correct versions, archetecture and location where to download the .zip files from. 
+# Make sure to also use a base image that has access to the internal package repos or already has the necessary packages installed. 
+
 FROM centos:centos7
+
+ENV TERRAFORM_VERSION=0.13.5
+ENV HELM_VERSION=1.2.4
+ENV KUBERNETES_VERSION=1.12.0
+ENV LOCAL_VERSION=2.0.0
+ENV RKE_VERSION=1.1.3
+ENV ARCH=linux_amd64
+ENV ZIP_LOC=https://releases.hashicorp.com/
 
 WORKDIR /home/
 
 # Install packages
 RUN yum update -y && yum install wget unzip git -y && \
-mkdir -p ~/.terraform.d/plugins  && \
+mkdir -p ~/.terraform.d/plugins/registry.terraform.io/hashicorp/helm/$HELM_VERSION/  && \
+mkdir -p ~/.terraform.d/plugins/registry.terraform.io/hashicorp/kubernetes/$KUBERNETES_VERSION/  && \
+mkdir -p ~/.terraform.d/plugins/registry.terraform.io/hashicorp/local/$LOCAL_VERSION/  && \
+mkdir -p ~/.terraform.d/plugins/registry.terraform.io/rancher/rke/$RKE_VERSION/  && \
 # Install Terraform
-wget https://releases.hashicorp.com/terraform/0.13.5/terraform_0.13.5_linux_amd64.zip && \ 
-unzip terraform_0.13.5_linux_amd64 && \
+wget $ZIP_LOC/terraform/0.13.5/terraform_$TERRAFORM_VERSION_$ARCH.zip && \ 
+unzip terraform_$TERRAFORM_VERSION_$ARCH && \
 mv ./terraform /usr/local/bin/ && \
 # Install Helm provider 
-wget https://releases.hashicorp.com/terraform-provider-helm/1.2.4/terraform-provider-helm_1.2.4_linux_amd64.zip && \ 
-unzip terraform-provider-helm_1.2.4_linux_amd64 && \
-mv terraform-provider-helm_v1.2.4_x4 ~/.terraform.d/plugins/ && \
+wget $ZIP_LOC/terraform-provider-helm/$HELM_VERSION/terraform-provider-helm_$HELM_VERSION_$ARCH.zip && \ 
+unzip terraform-provider-helm_$HELM_VERSION_$ARCH && \
+mv terraform-provider-helm_vHELM_VERSION* ~/.terraform.d/plugins/ && \
 # Install Kubernetes provider 
-wget https://releases.hashicorp.com/terraform-provider-kubernetes/1.12.0/terraform-provider-kubernetes_1.12.0_linux_amd64.zip && \ 
-unzip terraform-provider-kubernetes_1.12.0_linux_amd64.zip && \
-mv terraform-provider-kubernetes_v1.12.0_x4 ~/.terraform.d/plugins/ && \
+wget $ZIP_LOC/terraform-provider-kubernetes/$KUBERNETES_VERSION/terraform-provider-kubernetes_$KUBERNETES_VERSION_$ARCH.zip && \ 
+unzip terraform-provider-kubernetes_$KUBERNETES_VERSION_$ARCH.zip && \
+mv terraform-provider-kubernetes_v$KUBERNETES_VERSION* ~/.terraform.d/plugins/ && \
 # Install Local provider
-wget https://releases.hashicorp.com/terraform-provider-local/2.0.0/terraform-provider-local_2.0.0_linux_amd64.zip && \ 
-unzip terraform-provider-local_2.0.0_linux_amd64.zip && \
-mv terraform-provider-local_v2.0.0_x5 ~/.terraform.d/plugins/ && \
+wget $ZIP_LOC/terraform-provider-local/$LOCAL_VERSION/terraform-provider-local_$LOCAL_VERSION_$ARCH.zip && \ 
+unzip terraform-provider-local_$LOCAL_VERSION_$ARCH.zip && \
+mv terraform-provider-local_v$LOCAL_VERSION* ~/.terraform.d/plugins/ && \
 # Install Rancher RKE provider
-wget https://github.com/rancher/terraform-provider-rke/releases/download/v1.1.3/terraform-provider-rke_1.1.3_linux_amd64.zip && \ 
-unzip terraform-provider-rke_1.1.3_linux_amd64.zip && \
-mv terraform-provider-rke_v1.1.3 ~/.terraform.d/plugins/ && \
+wget https://github.com/rancher/terraform-provider-rke/releases/download/v$RKE_VERSION/terraform-provider-rke_$RKE_VERSION_$ARCH.zip && \ 
+unzip terraform-provider-rke_$RKE_VERSION_$ARCH.zip && \
+mv terraform-provider-rke_v$RKE_VERSION ~/.terraform.d/plugins/ && \
 # Cleanup image
 rm -rf /home/* && yum clean all
 
